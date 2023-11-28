@@ -1,0 +1,17 @@
+{
+  "name": "backend-autobahn",
+  "version": "1.0.0",
+  "description": "Backend autobahn project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Muteeb Ur Rehman",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "knex": "^3.0.1",
+    "sqlite3": "^5.1.6"
+  }
+}
