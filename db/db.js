@@ -1,32 +1,43 @@
-const fs = require("fs");
-const sqlite3 = require("sqlite3").verbose();
-const filepath = "./fish.db";
+import sqlite3 from 'sqlite3';
 
-function createDbConnection() {
-    if (fs.existsSync(filepath)) {
-        return new sqlite3.Database(filepath);
+const db = new sqlite3.Database('./fish.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    if (err) {
+        console.error(err.message);
     } else {
-        const db = new sqlite3.Database(filepath, (error) => {
-            if (error) {
-                return console.error(error.message);
+        console.log('Connected to the database');
+
+        // Create tables and perform other initializations here
+        // (Code for creating products, users, and carts tables)
+        db.run(`
+            CREATE TABLE IF NOT EXISTS account (
+               id INTEGER PRIMARY KEY AUTOINCREMENT,
+               fullName Text NOT NULL,
+               age INTEGER NOT NULL,
+               email TEXT NOT NULL,
+            )
+        `, (createErr) => {
+            if (createErr) {
+                console.error('Error creating create table:', createErr.message);
+            } else {
+                console.log(' CreateTable created successfully');
             }
-            createTable(db);
         });
-        console.log("Connection with SQLite has been established");
-        return db;
     }
-}
+});
 
-function createTable(db) {
-    db.exec(`
-  CREATE TABLE sharks
-  (
-    ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    name   VARCHAR(50) NOT NULL,
-    color   VARCHAR(50) NOT NULL,
-    weight INTEGER NOT NULL
-  );
-`);
+// Function to query the database
+async function queryDatabase(query, params) {
+    return new Promise((resolve, reject) => {
+        const db = new sqlite3.Database('./fish.db');
+        db.all(query, params, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+            db.close();
+        });
+    });
 }
-
-module.exports = createDbConnection();
+// Export the initialized database and query function
+export { db, queryDatabase };
